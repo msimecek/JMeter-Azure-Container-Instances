@@ -34,26 +34,24 @@ Use `03_destroy.sh` to remove all agents and master.
 
 ## Configuration
 
-RESOURCE_GROUP = RG name, where the testing infrastructure will live
-VNET = Virtual Network name, all agents and master will be placed into it
-SUBNET = Subnet name (can be "default")
-AGENT_BASE_NAME = Prefix for agent container instances' names.
-MASTER_NAME = Name of container instance of master
-
-REGISTRY_USERNAME = App ID of service principal with access to Container Registry
-REGISTRY_PASSWORD= App secret of service principal with access to Container Registry
-AGENT_IMAGE = Full image name of agent image (xxxx.azurecr.io/xxxx)
-MASTER_IMAGE= Full image name of master image (xxxx.azurecr.io/xxxx)
-
-STORAGE_ACCOUNT_NAME = Storage account with test definitions and where results will be stored
-STORAGE_ACCOUNT_KEY = Storage account key
-STORAGE_SHARE_NAME = File share name (needs to exist)
-STORAGE_MOUNT_PATH = Linux filesystem path where the share will be mounted
-
-AGENT_COUNT = How many agents will be created
-TARGET_SYSTEM = IP (DNS) of system under load
-
-TEST_FILE = Path to the JMX file which should be run. File will be uploaded to file share before running.
+| Property             | Meaning                                                      |
+|-|-|
+|RESOURCE_GROUP|RG name, where the testing infrastructure will live|
+|VNET|Virtual Network name, all agents and master will be placed into it|
+|SUBNET|Subnet name (can be "default")|
+|AGENT_BASE_NAME|Prefix for agent container instances' names|
+|MASTER_NAME|Name of container instance of master|
+|REGISTRY_USERNAME|App ID of service principal with access to Container Registry|
+|REGISTRY_PASSWORD|App secret of service principal with access to Container Registry|
+|AGENT_IMAGE|Full image name of agent image (xxxx.azurecr.io/xxxx)|
+|MASTER_IMAGE|Full image name of master image (xxxx.azurecr.io/xxxx)|
+|STORAGE_ACCOUNT_NAME|Storage account with test definitions and where results will be stored|
+|STORAGE_ACCOUNT_KEY|Storage account key|
+|STORAGE_SHARE_NAME|File share name (needs to exist)|
+|STORAGE_MOUNT_PATH|Linux filesystem path where the share will be mounted|
+|AGENT_COUNT|How many agents will be created|
+|TARGET_SYSTEM|IP (DNS) of system under load|
+|TEST_FILE|Path to the JMX file which should be run. File will be uploaded to file share before running|
 
 ## Potential issues
 
