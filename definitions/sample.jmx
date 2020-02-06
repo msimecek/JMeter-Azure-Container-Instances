@@ -10,7 +10,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="HOST" elementType="Argument">
             <stringProp name="Argument.name">HOST</stringProp>
-            <stringProp name="Argument.value">40.127.152.151</stringProp>
+            <stringProp name="Argument.value"></stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="USERS" elementType="Argument">
@@ -69,29 +69,6 @@
           <stringProp name="randomSeed"></stringProp>
           <stringProp name="variableName">PLAYER_ID</stringProp>
         </RandomVariableConfig>
-        <hashTree/>
-        <PreciseThroughputTimer guiclass="TestBeanGUI" testclass="PreciseThroughputTimer" testname="Precise Throughput Timer" enabled="false">
-          <doubleProp>
-            <name>throughput</name>
-            <value>1000.0</value>
-            <savedValue>0.0</savedValue>
-          </doubleProp>
-          <intProp name="throughputPeriod">60</intProp>
-          <longProp name="duration">120</longProp>
-          <intProp name="batchSize">1</intProp>
-          <intProp name="batchThreadDelay">0</intProp>
-          <intProp name="exactLimit">10000</intProp>
-          <doubleProp>
-            <name>allowedThroughputSurplus</name>
-            <value>1.0</value>
-            <savedValue>0.0</savedValue>
-          </doubleProp>
-          <longProp name="randomSeed">0</longProp>
-        </PreciseThroughputTimer>
-        <hashTree/>
-        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="false">
-          <stringProp name="ConstantTimer.delay">500</stringProp>
-        </ConstantTimer>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET health" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -183,7 +160,7 @@
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">C:\Users\msimecek\Source\RampUp\ScorerZ\src\load-tests\results\capacity-test-results.csv</stringProp>
+          <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="true">
