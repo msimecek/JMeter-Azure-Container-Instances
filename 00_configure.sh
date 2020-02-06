@@ -23,5 +23,6 @@ AGENT_COUNT=5
 TARGET_SYSTEM=
 
 TEST_FILE=./definitions/sample.jmx
+RESULTS_FILE_NAME=capacity-results.csv # currently duplicated in test.sh -> keep in sync
 
 echo "Configuration loaded."
