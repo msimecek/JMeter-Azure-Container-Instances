@@ -12,7 +12,7 @@
 
 ## How to use
 
-1. Prepare Azure Infrastructure (*ARM/Terraform template coming soon*) and get keys to Azure Storage and ACR Service Principal.
+1. Prepare Azure Infrastructure (you can use the Terraform template under *infra/* if you like to deploy the required components) and get keys to Azure Storage and ACR Service Principal.
 1. Prepare Docker images (based on Dockerfiles in the `docker/` folder), publish to Azure Container Registry.
 1. Prepare test in JMeter as JMX file.
 1. Fill the constants in `00_configure.sh` (description below).
