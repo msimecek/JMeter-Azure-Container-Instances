@@ -3,7 +3,7 @@ provider "azurerm" {
 }
 
 variable "prefix" {
-  default = "alwayson2"
+  default = "mysample"
 }
 
 resource "azurerm_resource_group" "rg" {
