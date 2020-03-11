@@ -1,5 +1,7 @@
 > Work in progress.
 
+![Architecture diagram](_img/achitecture-aci.png)
+
 ## Requirements
 
 * Bash (or WSL on Windows)
