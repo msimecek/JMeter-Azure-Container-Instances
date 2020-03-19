@@ -14,10 +14,9 @@ mkdir /jmeter && \
    tar -xzf apache-jmeter-${JMETER_VERSION}.tgz && \
    rm apache-jmeter-${JMETER_VERSION}.tgz
 
-export JMETER_HOME=/jmeter/apache-jmeter-${JMETER_VERSION}/
+export JMETER_HOME=/jmeter/apache-jmeter-${JMETER_VERSION}
 #export PATH=$JMETER_HOME/bin:$PATH
 
-echo "export JMETER_HOME=/jmeter/apache-jmeter-${JMETER_VERSION}" >> ~/.profile
-echo "PATH=$JMETER_HOME/bin:$PATH" >> ~/.profile
-
+echo "JMETER_HOME=/jmeter/apache-jmeter-${JMETER_VERSION}" >> /home/adminuser/.profile
+echo "PATH=$JMETER_HOME/bin:$PATH" >> /home/adminuser/.profile
 #COPY user.properties $JMETER_HOME/bin
