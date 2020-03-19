@@ -1,0 +1,2 @@
+location = "northeurope"
+prefix = "ltinfra"
