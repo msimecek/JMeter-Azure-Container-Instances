@@ -13,7 +13,7 @@ provider "random" {}
 
 variable "location" {
    type = string
-   default = "North Europe"
+   default = "northeurope"
 }
 
 variable "prefix" {
@@ -59,6 +59,7 @@ resource "azurerm_subnet" "subnet_agents" {
       name  = "acidelegation"
       service_delegation {
          name  = "Microsoft.ContainerInstance/containerGroups"
+         actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
       }
   }
 }
