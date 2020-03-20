@@ -23,9 +23,10 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "main" {
-    source = "./main"
-    location = "northeurope"
-    prefix = azurerm_resource_group.rg.name
+    source          = "./main"
+    location        = "northeurope"
+    prefix          = azurerm_resource_group.rg.name
+    master_vm_size  = "Standard_D3_v2"
 }
 
 module "neu_agents" {
@@ -50,7 +51,6 @@ module "eus_agents" {
     source      = "./agents"
     location    = "eastus"
     prefix      = azurerm_resource_group.rg.name
-    agent_count = 1
     registry_username   = var.registry_username
     registry_password   = var.registry_password
     region_subnet_id    = module.eus_infra.region_subnet_id

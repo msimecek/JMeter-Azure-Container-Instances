@@ -1,4 +1,4 @@
-location = "northeurope"
-prefix = "ltinfra4"
+# location = "northeurope"
+# prefix = "ltinfra4"
 
-master_vm_size = "Standard_D3_v2"
+# master_vm_size = "Standard_D3_v2"
