@@ -47,10 +47,10 @@ variable "master_vm_size" {
 }
 
 
-resource "azurerm_resource_group" "rg" {
-   name        = var.prefix
-   location    = var.location
-}
+# resource "azurerm_resource_group" "rg" {
+#    name        = var.prefix
+#    location    = var.location
+# }
 
 # ----
 # Network
@@ -58,31 +58,31 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_virtual_network" "vnet" {
    name                 = "${local.dc_name_root}-net"
-   location             = azurerm_resource_group.rg.location
-   resource_group_name  = azurerm_resource_group.rg.name
+   location             = var.location
+   resource_group_name  = var.prefix
    address_space        = ["10.1.0.0/16"]
 }
 
 resource "azurerm_subnet" "subnet_master" {
    name                 = "master"
-   resource_group_name  = azurerm_resource_group.rg.name
+   resource_group_name  = var.prefix
    virtual_network_name = azurerm_virtual_network.vnet.name
    address_prefix       = "10.1.1.0/24"
 }
 
 resource "azurerm_subnet" "subnet_agents" {
    name                 = "agents"
-   resource_group_name  = azurerm_resource_group.rg.name
+   resource_group_name  = var.prefix
    virtual_network_name = azurerm_virtual_network.vnet.name
    address_prefix       = "10.1.2.0/24"
    
-   delegation {
-      name  = "acidelegation"
-      service_delegation {
-         name  = "Microsoft.ContainerInstance/containerGroups"
-         actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-      }
-  }
+#    delegation {
+#       name  = "acidelegation"
+#       service_delegation {
+#          name  = "Microsoft.ContainerInstance/containerGroups"
+#          actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+#       }
+#   }
 }
 
 # ----
@@ -91,8 +91,8 @@ resource "azurerm_subnet" "subnet_agents" {
 
 resource "azurerm_storage_account" "storage" {
    name                 = "loadtestresources"
-   location             = azurerm_resource_group.rg.location
-   resource_group_name  = azurerm_resource_group.rg.name
+   location             = var.location
+   resource_group_name  = var.prefix
    account_kind         = "StorageV2"
    account_tier         = "Standard"
    account_replication_type = "LRS"
@@ -115,15 +115,15 @@ resource "azurerm_storage_share_directory" "results_dir" {
 
 resource "azurerm_public_ip" "publicip" {
    name                         = "master-public-ip"
-   resource_group_name          = azurerm_resource_group.rg.name
-   location                     = azurerm_resource_group.rg.location
+   resource_group_name          = var.prefix
+   location                     = var.location
    allocation_method            = "Static"
 }
 
 resource "azurerm_network_interface" "nic" {
   name                = "master-nic"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+  resource_group_name = var.prefix
+  location            = var.location
 
   ip_configuration {
     name                          = "internal"
@@ -140,8 +140,8 @@ resource "random_password" "adminpass" {
 
 resource "azurerm_linux_virtual_machine" "mastervm" {
    name                = "${var.prefix}-master"
-   resource_group_name = azurerm_resource_group.rg.name
-   location            = azurerm_resource_group.rg.location
+   resource_group_name = var.prefix
+   location            = var.location
    size                = var.master_vm_size
    network_interface_ids = [
       azurerm_network_interface.nic.id,
@@ -151,7 +151,7 @@ resource "azurerm_linux_virtual_machine" "mastervm" {
    admin_username                    = "adminuser"
    admin_password                    = random_password.adminpass.result
 
-   custom_data             = filebase64("../master/master-init.sh")
+   custom_data             = filebase64("./master/master-init.sh")
 
    os_disk {
       caching              = "ReadWrite"
@@ -173,8 +173,8 @@ resource "azurerm_linux_virtual_machine" "mastervm" {
 # No need for registry ATM.
 # resource "azurerm_container_registry" "container_registry" {
 #    name                 = "${var.prefix}registry"
-#    location             = azurerm_resource_group.rg.location
-#    resource_group_name  = azurerm_resource_group.rg.name
+#    location             = var.location
+#    resource_group_name  = var.prefix
 #    sku                  = "Basic"
 #    admin_enabled        = true
 # }
@@ -217,15 +217,27 @@ resource "azurerm_linux_virtual_machine" "mastervm" {
 # ----
 
 output "RESOURCE_GROUP" {
-  value = azurerm_resource_group.rg.name
+  value = var.prefix
 }
 
 output "VNET" {
    value = azurerm_virtual_network.vnet.name
 }
 
+output "main_vnet_id" {
+    value = azurerm_virtual_network.vnet.id
+}
+
+output "main_vnet_name" {
+    value = azurerm_virtual_network.vnet.name
+}
+
 output "SUBNET" {
    value = azurerm_subnet.subnet_agents.name
+}
+
+output "region_subnet_id" {
+    value = azurerm_subnet.subnet_agents.id
 }
 
 # output "REGISTRY_USERNAME" {
