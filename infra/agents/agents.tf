@@ -3,7 +3,10 @@ provider "azurerm" {
    features {}
 }
 
-variable "rg_name" {
+variable "prefix" {
+}
+
+variable "location" {
 }
 
 variable "agent_count" {
@@ -22,19 +25,32 @@ variable "registry_password" {
 
 # Referencing existing RG
 data "azurerm_resource_group" "rg" {
-   name = var.rg_name
+   name = var.prefix
+}
+
+variable "location_short" {
+   type = map(string)
+   default = {
+      northeurope   = "neu",
+      westeurope    = "weu",
+      eastus        = "eus"
+   }
+}
+
+locals {
+   dc_name_root   = "${var.prefix}-${var.location_short[var.location]}"
 }
 
 data "azurerm_subnet" "subnet" {
    name                 = "agents"
    resource_group_name  = data.azurerm_resource_group.rg.name
-   virtual_network_name = "${var.rg_name}net"
+   virtual_network_name = "${local.dc_name_root}-net"
 }
 
 resource "azurerm_network_profile" "agent_subnet_profile" {
-  name                = "agentsubnetprofile"
+  name                = "${local.dc_name_root}subnetprofile"
   resource_group_name = data.azurerm_resource_group.rg.name
-  location            = data.azurerm_resource_group.rg.location
+  location            = var.location # TODO: take from VNET
 
   container_network_interface {
     name = "agentnic"
@@ -48,9 +64,9 @@ resource "azurerm_network_profile" "agent_subnet_profile" {
 
 resource "azurerm_container_group" "agents" {
    count                = var.agent_count
-   name                 = "loadagent${count.index}"
+   name                 = "${local.dc_name_root}-loadagent${count.index}"
    resource_group_name  = data.azurerm_resource_group.rg.name
-   location             = data.azurerm_resource_group.rg.location
+   location             = var.location
    os_type              = "Linux"
    ip_address_type      = "Private"
    #network_profile_id   = var.network_profile
