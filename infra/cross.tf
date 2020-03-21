@@ -24,7 +24,7 @@ resource "azurerm_resource_group" "rg" {
 
 module "main" {
     source          = "./main"
-    location        = "northeurope"
+    location        = var.main_location
     prefix          = azurerm_resource_group.rg.name
     master_vm_size  = "Standard_D3_v2"
 }

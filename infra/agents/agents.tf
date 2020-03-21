@@ -159,5 +159,5 @@ resource "azurerm_linux_virtual_machine" "agentvm" {
 # ----
 
 output "agent_ip" {
-    value = azurerm_network_interface.nic.ip_configuration.private_ip_address
+    value = azurerm_network_interface.nic.ip_configuration[0].private_ip_address
 }

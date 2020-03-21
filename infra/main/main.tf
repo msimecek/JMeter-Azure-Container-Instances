@@ -139,31 +139,44 @@ resource "random_password" "adminpass" {
 }
 
 resource "azurerm_linux_virtual_machine" "mastervm" {
-   name                = "${var.prefix}-master"
-   resource_group_name = var.prefix
-   location            = var.location
-   size                = var.master_vm_size
-   network_interface_ids = [
-      azurerm_network_interface.nic.id,
-   ]
+    name                = "${var.prefix}-master"
+    resource_group_name = var.prefix
+    location            = var.location
+    size                = var.master_vm_size
+    network_interface_ids = [
+        azurerm_network_interface.nic.id,
+    ]
 
-   disable_password_authentication   = false
-   admin_username                    = "adminuser"
-   admin_password                    = random_password.adminpass.result
+    disable_password_authentication   = false
+    admin_username                    = "adminuser"
+    admin_password                    = random_password.adminpass.result
 
-   custom_data             = filebase64("./master/master-init.sh")
+    custom_data             = filebase64("./master/master-init.sh")
 
-   os_disk {
-      caching              = "ReadWrite"
-      storage_account_type = "Standard_LRS"
-   }
+    os_disk {
+        caching              = "ReadWrite"
+        storage_account_type = "Standard_LRS"
+    }
 
-   source_image_reference {
-      publisher = "Canonical"
-      offer     = "UbuntuServer"
-      sku       = "16.04-LTS"
-      version   = "latest"
-   }
+    source_image_reference {
+        publisher = "Canonical"
+        offer     = "UbuntuServer"
+        sku       = "16.04-LTS"
+        version   = "latest"
+    }
+
+    provisioner "remote-exec" {
+        connection {
+            type = "ssh"
+            user = self.admin_username
+            password = random_password.adminpass
+            host = azurerm_public_ip.publicip.ip_address
+        }
+
+        inline = [
+            "mount -t cifs //${azurerm_storage_account.storage.name}.file.core.windows.net/${azurerm_storage_share.fileshare.name} /mnt/load-tests -o vers=3.0,username=${azurerm_storage_account.storage.name},password=${azurerm_storage_account.storage.primary_access_key},serverino"
+        ]
+    }
 }
 
 # ----
