@@ -7,6 +7,7 @@ output "location_short" {
       northcentralus = "ncus",
       southcentralus = "scus",
       canadacentral = "cc",
-      francecentral = "fc"
+      francecentral = "fc",
+      uksouth       = "uks"
    }
 }
