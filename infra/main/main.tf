@@ -90,7 +90,7 @@ resource "azurerm_subnet" "subnet_agents" {
 # ----
 
 resource "azurerm_storage_account" "storage" {
-   name                 = "loadtestresources"
+   name                 = "${var.prefix}resources"
    location             = var.location
    resource_group_name  = var.prefix
    account_kind         = "StorageV2"
