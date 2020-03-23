@@ -20,15 +20,6 @@ variable "main_location" {
 variable "prefix" {
 }
 
-variable "location_short" {
-   type = map(string)
-   default = {
-      northeurope   = "neu",
-      westeurope    = "weu",
-      eastus        = "eus"
-   }
-}
-
 variable "main_vnet_id" {
 }
 
@@ -39,8 +30,12 @@ variable "dependency_var" {
     default = "null"
 }
 
+module "common" {
+    source = "../common"
+}
+
 locals {
-   dc_name_root   = "${var.prefix}-${var.location_short[var.location]}"
+    dc_name_root   = "${var.prefix}-${module.common.location_short[var.location]}"
 }
 
 # data "azurerm_resource_group" "main_rg" {
@@ -79,14 +74,14 @@ resource "azurerm_subnet" "subnet_agents" {
 }
 
 resource "azurerm_virtual_network_peering" "peering_to" {
-  name                      = "${var.location_short[var.location]}-main"
+  name                      = "${module.common.location_short[var.location]}-main"
   resource_group_name       = var.prefix
   virtual_network_name      = azurerm_virtual_network.vnet.name
   remote_virtual_network_id = var.main_vnet_id
 }
 
 resource "azurerm_virtual_network_peering" "peering_from" {
-  name                      = "main-${var.location_short[var.location]}"
+  name                      = "main-${module.common.location_short[var.location]}"
   resource_group_name       = var.prefix
   virtual_network_name      = var.main_vnet_name
   remote_virtual_network_id = azurerm_virtual_network.vnet.id

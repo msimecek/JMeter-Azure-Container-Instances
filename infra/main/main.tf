@@ -43,7 +43,7 @@ variable "file_share_name" {
 }
 
 variable "master_vm_size" {
-    default = "Standard_D8s_v3"
+    default = "Standard_DS12_v2"
 }
 
 
@@ -165,18 +165,21 @@ resource "azurerm_linux_virtual_machine" "mastervm" {
         version   = "latest"
     }
 
-    provisioner "remote-exec" {
-        connection {
-            type = "ssh"
-            user = self.admin_username
-            password = random_password.adminpass
-            host = azurerm_public_ip.publicip.ip_address
-        }
+    #
+    # Doesn't work on Windows without Pageant.
+    #
+    # provisioner "remote-exec" {
+    #     connection {
+    #         type = "ssh"
+    #         user = self.admin_username
+    #         password = random_password.adminpass.result
+    #         host = azurerm_public_ip.publicip.ip_address
+    #     }
 
-        inline = [
-            "mount -t cifs //${azurerm_storage_account.storage.name}.file.core.windows.net/${azurerm_storage_share.fileshare.name} /mnt/load-tests -o vers=3.0,username=${azurerm_storage_account.storage.name},password=${azurerm_storage_account.storage.primary_access_key},serverino"
-        ]
-    }
+    #     inline = [
+    #         "mount -t cifs //${azurerm_storage_account.storage.name}.file.core.windows.net/${azurerm_storage_share.fileshare.name} /mnt/load-tests -o vers=3.0,username=${azurerm_storage_account.storage.name},password=${azurerm_storage_account.storage.primary_access_key},serverino"
+    #     ]
+    # }
 }
 
 # ----
@@ -295,4 +298,16 @@ output "master_admin_password" {
 
 output "master_ip" {
     value = azurerm_public_ip.publicip.ip_address
+}
+
+output "storage_mount_cmd" {
+    value = "mount -t cifs //${azurerm_storage_account.storage.name}.file.core.windows.net/${azurerm_storage_share.fileshare.name} /mnt/load-tests -o vers=3.0,username=${azurerm_storage_account.storage.name},password=${azurerm_storage_account.storage.primary_access_key},serverino"
+}
+
+output "master_connection" {
+    value = {
+        user = "adminuser"
+        password = random_password.adminpass.result
+        host = azurerm_public_ip.publicip.ip_address
+    }
 }

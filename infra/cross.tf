@@ -4,17 +4,11 @@ provider "azurerm" {
 }
 
 variable "prefix" {
-    default = "ltinfra5"
+    default = "ltamericas"
 }
 
 variable "main_location" {
-    default = "northeurope"
-}
-
-variable "registry_username" {
-}
-
-variable "registry_password" {
+    default = "eastus"
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -26,36 +20,41 @@ module "main" {
     source          = "./main"
     location        = var.main_location
     prefix          = azurerm_resource_group.rg.name
-    master_vm_size  = "Standard_D3_v2"
+    master_vm_size  = "Standard_DS12_v2" # 4 CPU, 28 RAM
 }
 
-module "neu_agents" {
+# First agent to main location.
+module "agents_main" {
     source      = "./agents"
-    location    = "northeurope"
+    location    = var.main_location
     prefix      = azurerm_resource_group.rg.name
-    registry_username   = var.registry_username
-    registry_password   = var.registry_password
     region_subnet_id    = module.main.region_subnet_id
+    agent_vm_size       = "Standard_F8s_v2"
 }
 
-module "eus_infra" {
+# Provision infrastructure for second region.
+module "region1" {
     source          = "./region"
-    location        = "eastus"
-    main_location   = "northeurope"
+    location        = "canadacentral"
+    main_location   = var.main_location
     prefix          = azurerm_resource_group.rg.name
     main_vnet_id    = module.main.main_vnet_id
     main_vnet_name  = module.main.main_vnet_name
 }
 
-module "eus_agents" {
+# Second agent into second region.
+module "agents_1" {
     source      = "./agents"
-    location    = "eastus"
+    location    = "canadacentral"
     prefix      = azurerm_resource_group.rg.name
-    registry_username   = var.registry_username
-    registry_password   = var.registry_password
-    region_subnet_id    = module.eus_infra.region_subnet_id
+    region_subnet_id    = module.region1.region_subnet_id
+    agent_vm_size       = "Standard_F8s_v2"
+}
+
+output "master_connection" {
+    value = module.main.master_connection
 }
 
 output "agent_ips" {
-    value = list(module.neu_agents.agent_ip, module.eus_agents.agent_ip)
+    value = list(module.agents_main.agent_ip, module.agents_1.agent_ip)
 }
