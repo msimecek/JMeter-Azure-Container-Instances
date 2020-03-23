@@ -21,26 +21,21 @@ variable "agent_vm_size" {
     default = "Standard_D3_v2" #TODO: lower
 }
 
-variable "registry_username" {
-}
+# variable "registry_username" {
+# }
 
-variable "registry_password" {
-}
+# variable "registry_password" {
+# }
 
 variable "region_subnet_id" {
 }
 
-variable "location_short" {
-   type = map(string)
-   default = {
-      northeurope   = "neu",
-      westeurope    = "weu",
-      eastus        = "eus"
-   }
+module "common" {
+    source = "../common"
 }
 
 locals {
-   dc_name_root   = "${var.prefix}-${var.location_short[var.location]}"
+   dc_name_root   = "${var.prefix}-${module.common.location_short[var.location]}"
 }
 
 # data "azurerm_subnet" "subnet" {
