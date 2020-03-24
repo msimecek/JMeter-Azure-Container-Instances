@@ -9,25 +9,17 @@ provider "azuread" {
 
 provider "random" {}
 
-# Params
+
+# ----
+# Parameters
+# ----
 
 variable "location" {
-   type = string
    default = "northeurope"
 }
 
 variable "prefix" {
-   type = string
 }
-
-# variable "location_short" {
-#    type = map(string)
-#    default = {
-#       northeurope   = "neu",
-#       westeurope    = "weu",
-#       eastus        = "eus"
-#    }
-# }
 
 module "common" {
     source = "../common"
@@ -38,19 +30,12 @@ locals {
 }
 
 variable "file_share_name" {
-   type = string
    default = "test-data"
 }
 
 variable "master_vm_size" {
     default = "Standard_DS12_v2"
 }
-
-
-# resource "azurerm_resource_group" "rg" {
-#    name        = var.prefix
-#    location    = var.location
-# }
 
 # ----
 # Network
@@ -183,10 +168,9 @@ resource "azurerm_linux_virtual_machine" "mastervm" {
 }
 
 # ----
-# Containers
+# Containers - not used in VMSS mode
 # ----
 
-# No need for registry ATM.
 # resource "azurerm_container_registry" "container_registry" {
 #    name                 = "${var.prefix}registry"
 #    location             = var.location

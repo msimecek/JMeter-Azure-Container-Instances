@@ -9,7 +9,9 @@ provider "azuread" {
 
 provider "random" {}
 
-# Params
+# ----
+# Parameters
+# ----
 
 variable "location" {
 }
@@ -38,14 +40,6 @@ locals {
     dc_name_root   = "${var.prefix}-${module.common.location_short[var.location]}"
 }
 
-# data "azurerm_resource_group" "main_rg" {
-#    name = var.prefix
-# }
-
-# data "azurerm_virtual_network" "main_vnet" {
-#     name                = "${var.prefix}-${var.location_short[var.main_location]}-net"
-#     resource_group_name = var.prefix
-# }
 
 # ----
 # Network + peering

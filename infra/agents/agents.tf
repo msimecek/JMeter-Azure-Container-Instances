@@ -10,7 +10,6 @@ variable "location" {
 }
 
 # variable "registry_server" {
-#     default = "martinovoload.azurecr.io"
 # }
 
 variable "agent_vm_size" {
@@ -38,14 +37,9 @@ locals {
    dc_name_root   = "${var.prefix}-${module.common.location_short[var.location]}"
 }
 
-# data "azurerm_subnet" "subnet" {
-#    name                 = "agents"
-#    resource_group_name  = var.prefix
-#    virtual_network_name = "${local.dc_name_root}-net"
-# }
 
 # ----
-# Containers
+# Containers - not used in VMSS mode
 # ----
 
 # resource "azurerm_network_profile" "agent_subnet_profile" {
@@ -121,34 +115,6 @@ resource "random_password" "adminpass" {
    special     = true
 }
 
-# resource "azurerm_linux_virtual_machine" "agentvm" {
-#    name                = "${local.dc_name_root}-agent"
-#    resource_group_name = var.prefix
-#    location            = var.location
-#    size                = var.agent_vm_size
-#    network_interface_ids = [
-#       azurerm_network_interface.nic.id,
-#    ]
-
-#    disable_password_authentication   = false
-#    admin_username                    = "adminuser"
-#    admin_password                    = random_password.adminpass.result
-
-#    custom_data             = filebase64("./master/master-init.sh")
-
-#    os_disk {
-#       caching              = "ReadWrite"
-#       storage_account_type = "Standard_LRS"
-#    }
-
-#    source_image_reference {
-#       publisher = "Canonical"
-#       offer     = "UbuntuServer"
-#       sku       = "16.04-LTS"
-#       version   = "latest"
-#    }
-# }
-
 resource "azurerm_linux_virtual_machine_scale_set" "agentvmss" {
     name                = "${local.dc_name_root}-agents"
     resource_group_name = var.prefix
@@ -193,14 +159,10 @@ resource "azurerm_virtual_machine_scale_set_extension" "example" {
     type                         = "CustomScript"
     type_handler_version         = "2.0"
     
-    # settings = jsonencode({
-    #     "commandToExecute" = "echo $HOSTNAME"
-    # })
-    
     settings = jsonencode({
         "fileUris": [
-            "https://raw.githubusercontent.com/msimecek/JMeter-Azure-Container-Instances/cross-region/infra/master/master-init.sh",
-            "https://martinovo.blob.core.windows.net/stuff/agent-start.sh?st=2020-03-23T21%3A40%3A52Z&se=2025-03-24T21%3A40%3A00Z&sp=rl&sv=2018-03-28&sr=b&sig=v3iBB4tU9RKbX3FWQdZsoCe%2B0AXX%2F3VxYFR8lbbOhCo%3D"
+            "https://raw.githubusercontent.com/msimecek/JMeter-Azure-Container-Instances/vmss/infra/master/master-init.sh",
+            "https://raw.githubusercontent.com/msimecek/JMeter-Azure-Container-Instances/vmss/infra/agents/agent-start.sh"
         ],
         "commandToExecute": "./master-init.sh && ./agent-start.sh"
     })
